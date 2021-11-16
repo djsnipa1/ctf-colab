@@ -9,6 +9,11 @@
 
 name: Run Collaborative CTF Environment
 
+# Trigger from POST 
+on:
+  repository_dispatch:
+    types: [run-server]
+
 # Only run when manually triggered
 on:
   workflow_dispatch:
