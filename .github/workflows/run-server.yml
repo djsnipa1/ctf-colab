@@ -9,13 +9,13 @@
 
 name: Run Collaborative CTF Environment
 
-# Trigger from POST 
+# Only run when manually triggered
 on:
+
+# Trigger from POST
   repository_dispatch:
     types: [run-server]
 
-# Only run when manually triggered
-on:
   workflow_dispatch:
     inputs:
       ngrok_token:
@@ -80,11 +80,6 @@ jobs:
             "https://github.com/ericchiang/pup/releases/download/v0.4.0/pup_v0.4.0_linux_amd64.zip";
           unzip pup_v0.4.0_linux_amd64.zip;
           sudo mv ./pup /usr/local/bin/pup;
-          
-          # Install gcloud sdk 
-          curl https://sdk.cloud.google.com > install.sh
-          bash install.sh --disable-prompts
-
 
       # Make CTF files from the repo available in the ~/ctf directory
       - uses: actions/checkout@v2
