@@ -42,7 +42,8 @@ jobs:
             wget
             gcc
             tmux
-            vim
+            neovim
+            fish
             nmap
             htop
             gdb
@@ -67,8 +68,9 @@ jobs:
           PIP_PACKAGES=(
             pwntools
             ciphey
-            pyfiglet 
-            pipenv 
+            pyfiglet
+            pipenv
+            python-dotenv
           )
           python3 -m pip install --upgrade ${PIP_PACKAGES[@]}
 
