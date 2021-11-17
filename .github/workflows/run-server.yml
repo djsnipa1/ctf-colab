@@ -9,13 +9,13 @@
 
 name: Run Collaborative CTF Environment
 
-# Trigger from POST 
+# Only run when manually triggered
 on:
+
+# Trigger from POST
   repository_dispatch:
     types: [run-server]
 
-# Only run when manually triggered
-on:
   workflow_dispatch:
     inputs:
       ngrok_token:
