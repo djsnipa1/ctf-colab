@@ -16,6 +16,5 @@ curl https://getcroc.schollz.com | bash
 
 - [ ] - install dotfiles
 
-
 - [ ] - Figure out how to make a docker-compose of the zspotify docker
 
