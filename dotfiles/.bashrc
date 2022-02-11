@@ -4,8 +4,10 @@ alias ll='ls -AlFh'
 alias la='ls -A'
 alias l='ls -CF'
 
-export VISUAL=vim
+export VISUAL=nvim
 export EDITOR="$VISUAL"
+
+alias dpaste="curl -F 'format=url' -F 'content=<-' https://dpaste.org/api/"
 
 export PATH="$HOME/.local/bin:$PATH"
 
