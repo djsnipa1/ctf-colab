@@ -10,7 +10,7 @@
 curl https://getcroc.schollz.com | bash
 ```
 
-- [ ] - figure out run_server.py error. Could possibly seitch to node .js
+- [x] - figure out run_server.py error. Could possibly seitch to node .js
 
 - [ ] - Add secrets to github
 
