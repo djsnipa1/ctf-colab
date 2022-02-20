@@ -231,20 +231,20 @@ jobs:
               | tr -d '"' \
               | sed 's/tcp:\/\/\(.*\)/ssh ssh:\/\/runner@\1/g' \
               | sort >> ~/connect.log
-	
-	    cat ~/connect.log
-	    echo "CONNECT_INFO={cat ~/connect.log}" >> $GITHUB_ENV
+
+            cat ~/connect.log
+            echo "CONNECT_INFO={cat ~/connect.log}" >> $GITHUB_ENV
           fi
 
-	- name: 'Send SMS'
-	  uses: sms77io/github-action-sms@master
-	  with:
-	    from: 'Github Workflow'
-	   # text: 'Sms77.io wishes you a nice day!'
-	    text: echo "${{ env.CONNECT_INFO }}"
-	    to: '+13172155569,Chad Boyce'
-	  env:
-	    SMS77_API_KEY: ${{ secrets.SMS77_API_KEY }}
+      - name: 'Send SMS'
+        uses: sms77io/github-action-sms@master
+        with:
+          from: 'Github Workflow'
+        # text: 'Sms77.io wishes you a nice day!'
+          text: echo "${{ env.CONNECT_INFO }}"
+          to: '+13172155569,Chad Boyce'
+        env:
+          SMS77_API_KEY: ${{ secrets.SMS77_API_KEY }}
 
 
       - name: Sleep
