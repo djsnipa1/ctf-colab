@@ -230,14 +230,30 @@ jobs:
               | grep -v "null" \
               | tr -d '"' \
               | sed 's/tcp:\/\/\(.*\)/ssh ssh:\/\/runner@\1/g' \
-              | sort
+              | sort >> ~/connect.log
+	
+	    cat ~/connect.log
+	    echo "CONNECT_INFO={cat ~/connect.log}" >> $GITHUB_ENV
           fi
 
+	- name: 'Send SMS'
+	  uses: sms77io/github-action-sms@master
+	  with:
+	    from: 'Github Workflow'
+	   # text: 'Sms77.io wishes you a nice day!'
+	    text: echo "${{ env.CONNECT_INFO }}"
+	    to: '+13172155569,Chad Boyce'
+	  env:
+	    SMS77_API_KEY: ${{ secrets.SMS77_API_KEY }}
+
+
+      - name: Sleep
+        run: |
           # Wait... This process will be killed to end the Action. Return a
           # non-failure exit code in any case so that there are no unnecessary
           # notifications about a failed Actions workflow.
-          sleep 6h || true
 
+          sleep 6h || true
 
       - name: Clean up
         run: |
