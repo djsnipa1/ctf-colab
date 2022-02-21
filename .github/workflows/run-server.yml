@@ -11,8 +11,7 @@ name: Run Collaborative CTF Environment
 
 # Only run when manually triggered
 on:
-
-# Trigger from POST
+  # Trigger from POST
   repository_dispatch:
     types: [run-server]
 
@@ -94,7 +93,6 @@ jobs:
           # in a folder that doesn't exist and immediately fail
           mkdir --parents "$GITHUB_WORKSPACE"
 
-
       - name: Install dotfiles
         run: |
           cd ~/ctf/dotfiles
@@ -109,7 +107,6 @@ jobs:
 
           # Add a command to kill the action by killing the "sleep" process
           echo 'alias quit="pkill sleep"' >> ~/.bashrc
-
 
       - name: Install ngrok and run in the background as a daemon
         run: |
@@ -148,7 +145,6 @@ jobs:
               -config ~/ngrok.yml \
               ttyd ssh
 
-
       - name: Install ttyd and run in the background as a daemon
         run: |
           # xterm is required for tmux\ttyd. Installed here to highlight that
@@ -175,7 +171,6 @@ jobs:
               --credential runner:ctf \
               /bin/bash ~/ttyd_run.sh
 
-
       - name: Install Tor and run a hidden service in the background as a daemon
         run: |
           sudo apt-get --yes install tor
@@ -196,7 +191,6 @@ jobs:
             --hiddenservicedir /home/runner/tor_service \
             --hiddenserviceport "80 127.0.0.1:7681" \
             --hiddenserviceport "22 127.0.0.1:22"
-
 
       - name: Display connection information
         run: |
@@ -236,16 +230,12 @@ jobs:
             echo "CONNECT_INFO={cat ~/connect.log}" >> $GITHUB_ENV
           fi
 
-      - name: 'Send SMS'
-        uses: sms77io/github-action-sms@master
+      - name: "Artifact"
+        # run: echo "${{ env.CONNECT_INFO }}" >>
+      - uses: actions/upload-artifact@v2
         with:
-          from: 'Github Workflow'
-        # text: 'Sms77.io wishes you a nice day!'
-          text: echo "${{ env.CONNECT_INFO }}"
-          to: '+13172155569,Chad Boyce'
-        env:
-          SMS77_API_KEY: ${{ secrets.SMS77_API_KEY }}
-
+          name: my-artifact
+          path: ~/connect.log
 
       - name: Sleep
         run: |
