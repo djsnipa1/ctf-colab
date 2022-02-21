@@ -232,7 +232,7 @@ jobs:
 
       - name: "Artifact"
         # run: echo "${{ env.CONNECT_INFO }}" >>
-      - uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v2
         with:
           name: my-artifact
           path: ~/connect.log
