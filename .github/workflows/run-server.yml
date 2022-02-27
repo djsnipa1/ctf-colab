@@ -248,20 +248,24 @@ jobs:
           fi
 
 # Run python  text file
-    #   - name: Text Me Dependecies
-    #     uses: VaultVulp/action-pipenv@v2.0.1
-    #     with:
-    #       command: install -d # Install all dependencies, including development ones
-    # 
-    #   - name: Text Me
-    #     uses: VaultVulp/action-pipenv@v2.0.1
-    #     with:
-    #       command: run python main.py
-    #       # command: run test # Run custom `test` command defined in the `[scripts]` block of Pipfile
-    #
-    #         # I might need this comnect.log# 
-    #   - name: "Text Me
-    #     path: ~/connect.log
+      - name: Text Me Dependecies
+        uses: VaultVulp/action-pipenv@v2.0.1
+        with:
+          command: install -d # Install all dependencies, including development ones
+     
+      - name: Text Me
+        env:
+          TEXTNOW_SRC: ${{ secrets.TEXTNOW_SRC }}
+          TEXTNOW_CSRF: ${{ secrets.TEXTNOW_CSRF }}
+
+        uses: VaultVulp/action-pipenv@v2.0.1
+        with:
+          command: run python main.py
+        # command: run test # Run custom `test` command defined in the `[scripts]` block of Pipfile
+    
+        # I might need this comnect.log# 
+      # - name: Text Me
+        # path: ~/connect.log
 
       - name: Sleep
         run: |
