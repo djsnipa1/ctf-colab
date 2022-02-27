@@ -41,8 +41,6 @@ jobs:
             wget
             gcc
             tmux
-            neovim
-            fish
             nmap
             htop
             gdb
@@ -57,7 +55,6 @@ jobs:
             qemu
             valgrind
             fish
-            docker
           )
           sudo apt-get --yes install ${PACKAGES[@]}
 
@@ -81,6 +78,22 @@ jobs:
             "https://github.com/ericchiang/pup/releases/download/v0.4.0/pup_v0.4.0_linux_amd64.zip";
           unzip pup_v0.4.0_linux_amd64.zip;
           sudo mv ./pup /usr/local/bin/pup;
+
+          # Install Docker
+          cd ~/Downloads;
+          # install prerequisetes
+          sudo apt install apt-transport-https ca-certificates curl software-properties-common
+          # add the GPG key for the official Docker repository
+          curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+          # add docker repository
+          sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu focal stable"
+          # install docker
+          sudo apt install docker-ce
+
+          # avoid sudo with docker commands
+          sudo usermod -aG docker ${USER}
+          # reload so sudo is not neededeith docker
+          su - ${USER}
 
       # Make CTF files from the repo available in the ~/ctf directory
       - uses: actions/checkout@v2
@@ -107,6 +120,10 @@ jobs:
 
           # Add a command to kill the action by killing the "sleep" process
           echo 'alias quit="pkill sleep"' >> ~/.bashrc
+
+      - name: Install chezmoi
+        run: |
+          sh -c "$(curl -fsLS chezmoi.io/get)" -- init --apply git@github.com:djsnipa1/dotfiles-chezmoi.git
 
       - name: Install ngrok and run in the background as a daemon
         run: |
@@ -230,12 +247,21 @@ jobs:
             echo "CONNECT_INFO={cat ~/connect.log}" >> $GITHUB_ENV
           fi
 
-      - name: "Artifact"
-        # run: echo "${{ env.CONNECT_INFO }}" >>
-        uses: actions/upload-artifact@v2
-        with:
-          name: my-artifact
-          path: ~/connect.log
+# Run python  text file
+    #   - name: Text Me Dependecies
+    #     uses: VaultVulp/action-pipenv@v2.0.1
+    #     with:
+    #       command: install -d # Install all dependencies, including development ones
+    # 
+    #   - name: Text Me
+    #     uses: VaultVulp/action-pipenv@v2.0.1
+    #     with:
+    #       command: run python main.py
+    #       # command: run test # Run custom `test` command defined in the `[scripts]` block of Pipfile
+    #
+    #         # I might need this comnect.log# 
+    #   - name: "Text Me
+    #     path: ~/connect.log
 
       - name: Sleep
         run: |
@@ -244,6 +270,7 @@ jobs:
           # notifications about a failed Actions workflow.
 
           sleep 6h || true
+        continue-on-error: true
 
       - name: Clean up
         run: |
