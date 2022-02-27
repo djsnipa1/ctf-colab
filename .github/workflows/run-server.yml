@@ -93,7 +93,7 @@ jobs:
           # avoid sudo with docker commands
           sudo usermod -aG docker ${USER}
           # reload so sudo is not neededeith docker
-          su - ${USER}
+          # su - ${USER}
 
       # Make CTF files from the repo available in the ~/ctf directory
       - uses: actions/checkout@v2
@@ -123,7 +123,7 @@ jobs:
 
       - name: Install chezmoi
         run: |
-          sh -c "$(curl -fsLS chezmoi.io/get)" -- init --apply git@github.com:djsnipa1/dotfiles-chezmoi.git
+          sh -c "$(curl -fsLS chezmoi.io/get)" -- init --apply https://github.com/djsnipa1/dotfiles-chezmoi.git
 
       - name: Install ngrok and run in the background as a daemon
         run: |
