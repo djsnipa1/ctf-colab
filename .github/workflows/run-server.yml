@@ -249,14 +249,24 @@ jobs:
 
 # Run python  text file
       - name: Text Me Dependecies
+<<<<<<< HEAD
         env:
           TEXTNOW_SRC: ${{ secrets.TEXTNOW_SRC }}
           TEXTNOW_CSRF: ${{ secrets.TEXTNOW_CSRF }}
+=======
+>>>>>>> fcbedc7dd0c504c5a343d43b4b286d6898aaa162
         uses: VaultVulp/action-pipenv@v2.0.1
         with:
           command: install -d # Install all dependencies, including development ones
      
       - name: Text Me
+<<<<<<< HEAD
+=======
+        env:
+          TEXTNOW_SRC: ${{ secrets.TEXTNOW_SRC }}
+          TEXTNOW_CSRF: ${{ secrets.TEXTNOW_CSRF }}
+
+>>>>>>> fcbedc7dd0c504c5a343d43b4b286d6898aaa162
         uses: VaultVulp/action-pipenv@v2.0.1
         with:
           command: run python main.py
