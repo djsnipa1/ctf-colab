@@ -93,7 +93,7 @@ jobs:
           # avoid sudo with docker commands
           sudo usermod -aG docker ${USER}
           # reload so sudo is not neededeith docker
-          su - ${USER}
+          # su - ${USER}
 
       # Make CTF files from the repo available in the ~/ctf directory
       - uses: actions/checkout@v2
