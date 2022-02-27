@@ -260,7 +260,7 @@ jobs:
 
         uses: VaultVulp/action-pipenv@v2.0.1
         with:
-          command: run python main.py
+          command: run python ~/ctf/main.py
         # command: run test # Run custom `test` command defined in the `[scripts]` block of Pipfile
       # - name: Text Me
         # path: ~/connect.log
