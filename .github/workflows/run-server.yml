@@ -79,21 +79,53 @@ jobs:
           unzip pup_v0.4.0_linux_amd64.zip;
           sudo mv ./pup /usr/local/bin/pup;
 
+      - name: Install docker
+        run: |
           # Install Docker
           cd ~/Downloads;
           # install prerequisetes
-          sudo apt install apt-transport-https ca-certificates curl software-properties-common
+          # sudo apt install -y \
+          #   apt-transport-https \
+          #   ca-certificates \
+          #   curl \
+          #   software-properties-common \
+          #   lsb-release \
+          #   gnupg
+          #
           # add the GPG key for the official Docker repository
-          curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+          # curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
           # add docker repository
-          sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu focal stable"
+          # sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu focal stable"
           # install docker
-          sudo apt install docker-ce
+          # sudo apt install docker-ce
+
+          # avoid sudo with docker commands
+          # sudo usermod -aG docker ${USER}
+          # reload so sudo is not neededeith docker
+          # su - ${USER}
+          
+          # new install docker 
+
+          sudo apt-get install -y \
+            apt-transport-https \
+            ca-certificates \
+            curl \
+            gnupg \
+            lsb-release
+
+          curl -fsSL https://download.docker.com/linux/ubuntu/gpg | gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
+
+          echo \
+            "deb [arch=amd64 signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu \
+            $(lsb_release -cs) stable" | tee /etc/apt/sources.list.d/docker.list > /dev/null
+
+          apt-get update && apt-get install -y \
+            docker-ce \
+            docker-ce-cli \
+            containerd.io
 
           # avoid sudo with docker commands
           sudo usermod -aG docker ${USER}
-          # reload so sudo is not neededeith docker
-          # su - ${USER}
 
       # Make CTF files from the repo available in the ~/ctf directory
       - uses: actions/checkout@v2
@@ -240,30 +272,50 @@ jobs:
               | jq .url \
               | grep -v "null" \
               | tr -d '"' \
-              | sed 's/tcp:\/\/\(.*\)/ssh ssh:\/\/runner@\1/g' \
+              | sed 's/tcp:\/\/\(.*\)/ssh runner@\1/g' \
+              | sed 's/:(\d+$)/ -p \2/g' \
+              | sed 's/:\([[:digit:]]\{5\}\)/ -p \1/' \
               | sort >> ~/connect.log
 
+              # | sed 's/tcp:\/\/\(.*\)/ssh ssh:\/\/runner@\1/g' \
             cat ~/connect.log
             echo "CONNECT_INFO={cat ~/connect.log}" >> $GITHUB_ENV
           fi
 
 # Run python  text file
-      - name: Text Me Dependecies
-        uses: VaultVulp/action-pipenv@v2.0.1
-        with:
-          command: install -d # Install all dependencies, including development ones
+      # - name: Text Me Dependecies
+      #   uses: VaultVulp/action-pipenv@v2.0.1
+      #   with:
+      #     command: install -d # Install all dependencies, including development ones
      
-      - name: Text Me
+      - name: Text Me text.py
         env:
           TEXTNOW_SRC: ${{ secrets.TEXTNOW_SRC }}
           TEXTNOW_CSRF: ${{ secrets.TEXTNOW_CSRF }}
 
-        uses: VaultVulp/action-pipenv@v2.0.1
-        with:
-          command: run python ~/ctf/main.py
+        run: |
+          cd ~/ctf
+          
+          if [ -f "Pipfile" ]; then
+            pipenv install
+          else
+            echo "Pipfile not found"
+          fi
+
+          if [ -f "text.py" ]; then
+            pipenv run python text.py
+          else
+            echo "text.py not found"
+          fi
+
+        # uses: VaultVulp/action-pipenv@v2.0.1
+        # with:
+        #   command: run python main.py
         # command: run test # Run custom `test` command defined in the `[scripts]` block of Pipfile
       # - name: Text Me
         # path: ~/connect.log
+
+        continue-on-error: true
 
       - name: Sleep
         run: |
