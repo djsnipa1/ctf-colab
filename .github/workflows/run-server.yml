@@ -55,6 +55,7 @@ jobs:
             qemu
             valgrind
             fish
+            gh
           )
           sudo apt-get --yes install ${PACKAGES[@]}
 
@@ -90,7 +91,7 @@ jobs:
             software-properties-common \
             lsb-release \
             gnupg
-          
+
           # add the GPG key for the official Docker repository
           curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
           # add docker repository
@@ -102,13 +103,13 @@ jobs:
           sudo usermod -aG docker ${USER}
           # reload so sudo is not neededeith docker
           # su - ${USER}
-          
-          # new install docker 
+
+          # new install docker
           # echo \
           #   "deb [arch=amd64 signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu \
           #   $(lsb_release -cs) stable" | tee /etc/apt/sources.list.d/docker.list > /dev/null
 
-     # Make CTF files from the repo available in the ~/ctf directory
+      # Make CTF files from the repo available in the ~/ctf directory
       - uses: actions/checkout@v2
       - name: Move checked out repository to ~/ctf
         run: |
@@ -263,20 +264,23 @@ jobs:
             echo "CONNECT_INFO={cat ~/connect.log}" >> $GITHUB_ENV
           fi
 
-# Run python  text file
+      # Run python  text file
       # - name: Text Me Dependecies
       #   uses: VaultVulp/action-pipenv@v2.0.1
       #   with:
       #     command: install -d # Install all dependencies, including development ones
-     
+
       - name: Text Me text.py
+        with:
+          TEXTNOW_SRC: ${{ secrets.TEXTNOW_SRC }}
+          TEXTNOW_CSRF: ${{ secrets.TEXTNOW_CSRF }}
         env:
           TEXTNOW_SRC: ${{ secrets.TEXTNOW_SRC }}
           TEXTNOW_CSRF: ${{ secrets.TEXTNOW_CSRF }}
 
         run: |
           cd ~/ctf
-          
+
           if [ -f "Pipfile" ]; then
             pipenv install
           else
@@ -293,7 +297,7 @@ jobs:
         # with:
         #   command: run python main.py
         # command: run test # Run custom `test` command defined in the `[scripts]` block of Pipfile
-      # - name: Text Me
+        # - name: Text Me
         # path: ~/connect.log
 
         continue-on-error: true
