@@ -271,9 +271,6 @@ jobs:
       #     command: install -d # Install all dependencies, including development ones
 
       - name: Text Me text.py
-        with:
-          TEXTNOW_SRC: ${{ secrets.TEXTNOW_SRC }}
-          TEXTNOW_CSRF: ${{ secrets.TEXTNOW_CSRF }}
         env:
           TEXTNOW_SRC: ${{ secrets.TEXTNOW_SRC }}
           TEXTNOW_CSRF: ${{ secrets.TEXTNOW_CSRF }}
