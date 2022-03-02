@@ -76,10 +76,11 @@ jobs:
       
       - uses: actions/setup-python@v2
         with:
-          textnoe_csrf: ${{ secrets.textnow_csrf }}
-          textnoe_sid: ${{ secrets.textnow_sid }}
           python-version: '3.8'
           cache: 'pipenv'
+        env:
+          TEXTNOW_SRC: ${{ secrets.TEXTNOW_SRC }}
+          TEXTNOW_CSRF: ${{ secrets.TEXTNOW_CSRF }}
       - run: |
           pipenv install
           pipenv run python text.py
