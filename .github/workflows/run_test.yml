@@ -47,6 +47,7 @@ jobs:
           PACKAGES=(
             build-essential
             jq
+            pyenv
           )
           sudo apt-get --yes install ${PACKAGES[@]}
 
