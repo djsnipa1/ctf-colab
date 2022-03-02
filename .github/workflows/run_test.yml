@@ -75,13 +75,15 @@ jobs:
           pipx install pipenv
       
       - uses: actions/setup-python@v2
+        name: setup python
         with:
-          python-version: '3.8'
+          python-version: '3.10'
           cache: 'pipenv'
         env:
           TEXTNOW_SRC: ${{ secrets.TEXTNOW_SRC }}
           TEXTNOW_CSRF: ${{ secrets.TEXTNOW_CSRF }}
-      - run: |
+        working-directory: ~/ctf
+        run: |
           pipenv install
           pipenv run python text.py
 
