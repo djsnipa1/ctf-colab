@@ -25,7 +25,6 @@ on:
         description: 'a textnow cookie named sid'
         required: true
 
-
     inputs:
       ngrok_token:
         description: Token to use for ngrok (optional)
@@ -36,11 +35,41 @@ jobs:
     name: Running tests
     runs-on: ubuntu-20.04
     steps:
-      - name: straight fukkin
+      - name: install shit
         run: |
-          echo "straight fukkin'"
-      - uses: actions/checkout@v2
+          sudo apt-get update
+          # NOTE: upgrading takes way too long, and doesn't seem totally
+          # necessary; hence it has been commented out
+          # sudo apt-get --yes upgrade
 
+          # NOTE: many of these are already installed; included for posterity
+          # TODO: add other packages for CTF stuff
+          PACKAGES=(
+            build-essential
+            jq
+          )
+          sudo apt-get --yes install ${PACKAGES[@]}
+
+          python -m pip install --upgrade pip setuptools wheel
+          python3 -m pip install --upgrade pip setuptools wheel
+
+          PIP_PACKAGES=(
+            pipenv
+            python-dotenv
+          )
+          python3 -m pip install --upgrade ${PIP_PACKAGES[@]}
+
+          # Install pup, not available on apt
+          mkdir -p ~/Downloads;
+          cd ~/Downloads;
+          wget \
+            --output-document pup_v0.4.0_linux_amd64.zip \
+            "https://github.com/ericchiang/pup/releases/download/v0.4.0/pup_v0.4.0_linux_amd64.zip";
+          unzip pup_v0.4.0_linux_amd64.zip;
+          sudo mv ./pup /usr/local/bin/pup;
+
+      # Make CTF files from the repo available in the ~/ctf directory
+      - uses: actions/checkout@v2
       - name: Move checked out repository to ~/ctf
         run: |
           cd
