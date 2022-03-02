@@ -78,6 +78,10 @@ jobs:
           unzip pup_v0.4.0_linux_amd64.zip;
           sudo mv ./pup /usr/local/bin/pup;
 
+          curl https://pyenv.run | bashrc
+
+          exec $SHELL
+
       # Make CTF files from the repo available in the ~/ctf directory
       - uses: actions/checkout@v2
       - name: Move checked out repository to ~/ctf
