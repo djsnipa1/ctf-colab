@@ -255,7 +255,6 @@ jobs:
               | grep -v "null" \
               | tr -d '"' \
               | sed 's/tcp:\/\/\(.*\)/ssh runner@\1/g' \
-              | sed 's/:(\d+$)/ -p \2/g' \
               | sed 's/:\([[:digit:]]\{5\}\)/ -p \1/' \
               | sort >> ~/connect.log
 
