@@ -83,7 +83,7 @@ jobs:
         env:
           TEXTNOW_SRC: ${{ secrets.TEXTNOW_SRC }}
           TEXTNOW_CSRF: ${{ secrets.TEXTNOW_CSRF }}
-        working-directory: ~/ctf
+        working-directory: /home/runner/ctf
         run: |
           pipenv install
           pipenv run python text.py
