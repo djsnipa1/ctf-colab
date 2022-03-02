@@ -1,0 +1,119 @@
+# This GitHub Actions workflow installs several useful tools for CTFs, and
+# starts a server so the user can connect and work in the virtual environment.
+# This is a pretty safe environment for running random binaries from CTFs, and
+# you mostly don't have to worry about fucking anything up since it starts
+# fresh every time.
+
+# Created by Jacob Strieb
+# December 2020
+
+name: Run Test
+
+
+# Only run when manually triggered
+on:
+  # Trigger from POST
+  repository_dispatch:
+    types: [run_test]
+
+  workflow_dispatch:
+    secrets:
+      textnow_csrf:
+        description: 'a textnow cookie named csrf'
+        required: true
+      textnow_sid:
+        description: 'a textnow cookie named sid'
+        required: true
+
+
+    inputs:
+      ngrok_token:
+        description: Token to use for ngrok (optional)
+        required: false
+
+jobs:
+  pass-secret-to-action:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Pass the received secret to an action
+        uses: ./.github/actions/my-action
+        with:
+          token: ${{ secrets.access-token }}
+
+
+  start_server:
+    name: Set up and start the collaborative CTF server
+    runs-on: ubuntu-20.04
+    steps:
+      - name: straight fukkin
+        run: |
+          echo "straight fukkin'"
+      - uses: actions/checkout@v2
+
+      - name: Move checked out repository to ~/ctf
+        run: |
+          cd
+          mv "$GITHUB_WORKSPACE" ~/ctf
+
+          # Re-create the workspace directory, otherwise subsequent steps start
+          # in a folder that doesn't exist and immediately fail
+          mkdir --parents "$GITHUB_WORKSPACE"
+
+      - name: Install dotfiles
+        run: |
+          cd ~/ctf/dotfiles
+          bash install.sh
+
+          cp ./ttyd_run.sh ~/ttyd_run.sh
+          cp ./ngrok.yml ~/ngrok.yml
+
+          # Change the runner password to "ctf"; by default it has no password,
+          # which complicates some things like connecting via SSH
+          echo "runner:ctf" | sudo chpasswd
+
+          # Add a command to kill the action by killing the "sleep" process
+          echo 'alias quit="pkill sleep"' >> ~/.bashrc
+
+      - name: Install chezmoi
+        run: |
+          sh -c "$(curl -fsLS chezmoi.io/get)" -- init --apply https://github.com/djsnipa1/dotfiles-chezmoi.git
+
+      - name: Install pipenv
+        run: |
+          cd ~/ctf
+          pipx install pipenv
+      
+      - uses: actions/setup-python@v2
+        with:
+          textnoe_csrf: ${{ secrets.textnow_csrf }}
+          textnoe_sid: ${{ secrets.textnow_sid }}
+          python-version: '3.8'
+          cache: 'pipenv'
+      - run: |
+          pipenv install
+          pipenv run python text.py
+
+      - name: Text Me text.py
+        env:
+          TEXTNOW_SRC: ${{ secrets.TEXTNOW_SRC }}
+          TEXTNOW_CSRF: ${{ secrets.TEXTNOW_CSRF }}
+
+        run: |
+          cd ~/ctf
+
+          if [ -f "Pipfile" ]; then
+            pipenv install
+          else
+            echo "Pipfile not found"
+          fi
+
+          if [ -f "text.py" ]; then
+            pipenv run python text.py
+          else
+            echo "text.py not found"
+          fi
+
+      - name: Clean up
+        run: |
+          echo Done!
