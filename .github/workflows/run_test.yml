@@ -45,6 +45,16 @@ jobs:
           # NOTE: many of these are already installed; included for posterity
           # TODO: add other packages for CTF stuff
           PACKAGES=(
+            binutils
+            curl
+            wget
+            gcc
+            tmux
+            nmap
+            htop
+            gdb
+            netcat
+            socat
             build-essential
             jq
           )
