@@ -56,8 +56,16 @@ jobs:
             valgrind
             fish
             gh
+            ncdu
+            bat
+            exa
           )
+
           sudo apt-get --yes install ${PACKAGES[@]}
+
+          sudo add-apt-repository ppa:neovim-ppa/unstable
+          sudo apt-get update
+          sudo apt-get install neovim
 
           python -m pip install --upgrade pip setuptools wheel
           python3 -m pip install --upgrade pip setuptools wheel
