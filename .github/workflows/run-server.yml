@@ -22,15 +22,15 @@ on:
         required: false
 
 jobs:
-  env:
-    TEXTNOW_SRC: ${{ secrets.TEXTNOW_SRC }}
-    TEXTNOW_CSRF: ${{ secrets.TEXTNOW_CSRF }}
-
   start_server:
     name: Set up and start the collaborative CTF server
     runs-on: ubuntu-20.04
     steps:
       - name: install (and upgrade) packages
+	 		 	env:
+			    TEXTNOW_SRC: ${{ secrets.TEXTNOW_SRC }}
+			    TEXTNOW_CSRF: ${{ secrets.TEXTNOW_CSRF }}
+
         run: |
           sudo apt-get update
           # NOTE: upgrading takes way too long, and doesn't seem totally
