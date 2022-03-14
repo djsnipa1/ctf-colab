@@ -30,7 +30,7 @@ jobs:
     name: Set up and start the collaborative CTF server
     runs-on: ubuntu-20.04
     steps:
-      - name: Install (and upgrade) packages
+      - name: install (and upgrade) packages
         run: |
           sudo apt-get update
           # NOTE: upgrading takes way too long, and doesn't seem totally
@@ -75,7 +75,7 @@ jobs:
           )
           python3 -m pip install --upgrade ${PIP_PACKAGES[@]}
 
-          Install pup, not available on apt
+	# Install pup, not available on apt
           mkdir -p ~/Downloads;
           cd ~/Downloads;
           wget \
