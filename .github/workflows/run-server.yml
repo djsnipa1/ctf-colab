@@ -27,9 +27,9 @@ jobs:
     runs-on: ubuntu-20.04
     steps:
       - name: install (and upgrade) packages
-	 		 	env:
-			    TEXTNOW_SRC: ${{ secrets.TEXTNOW_SRC }}
-			    TEXTNOW_CSRF: ${{ secrets.TEXTNOW_CSRF }}
+        env:
+          TEXTNOW_SRC: ${{ secrets.TEXTNOW_SRC }}
+          TEXTNOW_CSRF: ${{ secrets.TEXTNOW_CSRF }}
 
         run: |
           sudo apt-get update
