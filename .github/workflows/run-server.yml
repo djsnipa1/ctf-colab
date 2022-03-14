@@ -58,7 +58,6 @@ jobs:
             gh
             ncdu
             bat
-            exa
           )
 
           sudo apt-get --yes install ${PACKAGES[@]}
