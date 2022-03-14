@@ -1,3 +1,8 @@
+[![Run Collaborative CTF Environment](https://github.com/djsnipa1/ctf-colab/actions/workflows/run-server.yml/badge.svg?branch=texting&event=workflow_dispatch)](https://github.com/djsnipa1/ctf-colab/actions/workflows/run-server.yml)
+[![shields](https://img.shields.io/static/v1?label=I%20love&message=Gitpod&logo=gitpod&color=orange)](https://gitpod.ui/#https://guthub.com/djsnipa1/ctf-colab/tree/)
+[![Gitpod: Ready-to-Code](https://camo.githubusercontent.com/ab059fd13892f6ad2c0b59661ce3265669cac8204fafa8b379ec9c56f67c4391/68747470733a2f2f696d672e736869656c64732e696f2f62616467652f476974706f642d52656164792d2d746f2d2d436f64652d626c75653f6c6f676f3d676974706f64)](https://gitpod.ui/#https://guthub.com/djsnipa1/ctf-colab/tree/texting)
+[![Run on repl.it](https://repl.it/badge/github/djsnipa1/ctf-colab/)](https://repl.it/github/djsnipa1/ctf-colab/}&ref=button)
+
 # Introduction
 
 Create an ephemeral, collaborative programming environment inside GitHub
