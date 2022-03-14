@@ -22,6 +22,10 @@ on:
         required: false
 
 jobs:
+  env:
+    TEXTNOW_SRC: ${{ secrets.TEXTNOW_SRC }}
+    TEXTNOW_CSRF: ${{ secrets.TEXTNOW_CSRF }}
+
   start_server:
     name: Set up and start the collaborative CTF server
     runs-on: ubuntu-20.04
@@ -270,10 +274,6 @@ jobs:
       #     command: install -d # Install all dependencies, including development ones
 
       - name: Text Me text.py
-        env:
-          TEXTNOW_SRC: ${{ secrets.TEXTNOW_SRC }}
-          TEXTNOW_CSRF: ${{ secrets.TEXTNOW_CSRF }}
-
         run: |
           cd ~/ctf
 
