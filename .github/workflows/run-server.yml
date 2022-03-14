@@ -79,7 +79,7 @@ jobs:
 
       - name: Install Docker
         run: |
-          cd ~/Downloads;
+          cd ~/
           # install prerequisetes
           sudo apt install -y \
             apt-transport-https \
