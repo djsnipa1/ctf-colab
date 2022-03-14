@@ -75,7 +75,7 @@ jobs:
           )
           python3 -m pip install --upgrade ${PIP_PACKAGES[@]}
 
-	      # Install pup, not available on apt
+					# Install pup, not available on apt
           mkdir -p ~/Downloads;
           cd ~/Downloads;
           wget \
