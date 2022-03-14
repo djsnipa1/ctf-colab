@@ -1,3 +1,4 @@
+# this file sucks
 # This GitHub Actions workflow installs several useful tools for CTFs, and
 # starts a server so the user can connect and work in the virtual environment.
 # This is a pretty safe environment for running random binaries from CTFs, and
