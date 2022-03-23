@@ -33,124 +33,153 @@ on:
 jobs:
   start_server:
     name: Running tests
+    env:
+      TEXTNOW_SRC: ${{ secrets.TEXTNOW_SRC }}
+      TEXTNOW_CSRF: ${{ secrets.TEXTNOW_CSRF }}
     runs-on: ubuntu-20.04
-    steps:
-      - name: install shit
-        run: |
-          sudo apt-get update
-          # NOTE: upgrading takes way too long, and doesn't seem totally
-          # necessary; hence it has been commented out
-          # sudo apt-get --yes upgrade
+  steps:
+  - name: testing 123 
+    uses: actions/setup-python@v3
+    with:
+      python-version: '3.10'
+      cache: 'pipenv'
+  - name: Install pipenv
+    run: pipx install pipenv
 
-          # NOTE: many of these are already installed; included for posterity
-          # TODO: add other packages for CTF stuff
-          PACKAGES=(
-            binutils
-            curl
-            wget
-            gcc
-            tmux
-            nmap
-            htop
-            gdb
-            netcat
-            socat
-            build-essential
-            jq
-          )
-          sudo apt-get --yes install ${PACKAGES[@]}
+  # - name: Install dependencies
+  #   run: |
+  #     python -m pip install --upgrade pip
+  #     python -m pip install flake8 pytest
+  #     if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
 
-          python -m pip install --upgrade pip setuptools wheel
-          python3 -m pip install --upgrade pip setuptools wheel
+  - name: Move checked out repository to ~/ctf
+  - uses: actions/checkout@v3
+    run: |
+      cd
+      mv "$GITHUB_WORKSPACE" ~/ctf
+      cd ~/ctf
+      pipenv install
+      echo 'Pipenv installed'
 
-          PIP_PACKAGES=(
-            pipenv
-            python-dotenv
-          )
-          python3 -m pip install --upgrade ${PIP_PACKAGES[@]}
+      pipenv run python text.py
 
-          # Install pup, not available on apt
-          # mkdir -p ~/Downloads;
-          # cd ~/Downloads;
-          # wget \
-          #   --output-document pup_v0.4.0_linux_amd64.zip \
-          #   "https://github.com/ericchiang/pup/releases/download/v0.4.0/pup_v0.4.0_linux_amd64.zip";
-          # unzip pup_v0.4.0_linux_amd64.zip;
-          # sudo mv ./pup /usr/local/bin/pup;
-
-          curl https://pyenv.run | bashrc
-
-          exec $SHELL
-
-      # Make CTF files from the repo available in the ~/ctf directory
-      - uses: actions/checkout@v2
-      - name: Move checked out repository to ~/ctf
-        run: |
-          cd
-          mv "$GITHUB_WORKSPACE" ~/ctf
-
-          # Re-create the workspace directory, otherwise subsequent steps start
-          # in a folder that doesn't exist and immediately fail
-          mkdir --parents "$GITHUB_WORKSPACE"
-
-      - name: Install dotfiles
-        run: |
-          cd ~/ctf/dotfiles
-          bash install.sh
-
-          cp ./ttyd_run.sh ~/ttyd_run.sh
-          cp ./ngrok.yml ~/ngrok.yml
-
-          # Change the runner password to "ctf"; by default it has no password,
-          # which complicates some things like connecting via SSH
-          echo "runner:ctf" | sudo chpasswd
-
-          # Add a command to kill the action by killing the "sleep" process
-          echo 'alias quit="pkill sleep"' >> ~/.bashrc
-
-      - name: Install chezmoi
-        run: |
-          sh -c "$(curl -fsLS chezmoi.io/get)" -- init --apply https://github.com/djsnipa1/dotfiles-chezmoi.git
-
-      - name: Install pipenv
-        run: |
-          cd ~/ctf
-          pipx install pipenv
-      
-      # - uses: actions/setup-python@v2
-      #   with:
-      #     python-version: '3.10'
-      #     cache: 'pipenv'
-
-      - name: run python / pipenv
-        env:
-          TEXTNOW_SRC: ${{ secrets.TEXTNOW_SRC }}
-          TEXTNOW_CSRF: ${{ secrets.TEXTNOW_CSRF }}
-        working-directory: /home/runner/ctf
-        run: |
-          pipenv install
-          pipenv run python text.py
-
-      - name: Text Me text.py
-        env:
-          TEXTNOW_SRC: ${{ secrets.TEXTNOW_SRC }}
-          TEXTNOW_CSRF: ${{ secrets.TEXTNOW_CSRF }}
-
-        run: |
-          cd ~/ctf
-
-          if [ -f "Pipfile" ]; then
-            pipenv install
-          else
-            echo "Pipfile not found"
-          fi
-
-          if [ -f "text.py" ]; then
-            pipenv run python text.py
-          else
-            echo "text.py not found"
-          fi
-
-      - name: Clean up
-        run: |
-          echo Done!
+    # steps:
+    #   - name: install shit
+    #     run: |
+    #       sudo apt-get update
+    #       # NOTE: upgrading takes way too long, and doesn't seem totally
+    #       # necessary; hence it has been commented out
+    #       # sudo apt-get --yes upgrade
+    #
+    #       # NOTE: many of these are already installed; included for posterity
+    #       # TODO: add other packages for CTF stuff
+    #       PACKAGES=(
+    #         binutils
+    #         curl
+    #         wget
+    #         gcc
+    #         tmux
+    #         nmap
+    #         htop
+    #         gdb
+    #         netcat
+    #         socat
+    #         build-essential
+    #         jq
+    #       )
+    #       sudo apt-get --yes install ${PACKAGES[@]}
+    #
+    #       python -m pip install --upgrade pip setuptools wheel
+    #       python3 -m pip install --upgrade pip setuptools wheel
+    #
+    #       PIP_PACKAGES=(
+    #         pipenv
+    #         python-dotenv
+    #       )
+    #       python3 -m pip install --upgrade ${PIP_PACKAGES[@]}
+    #
+    #       # Install pup, not available on apt
+    #       # mkdir -p ~/Downloads;
+    #       # cd ~/Downloads;
+    #       # wget \
+    #       #   --output-document pup_v0.4.0_linux_amd64.zip \
+    #       #   "https://github.com/ericchiang/pup/releases/download/v0.4.0/pup_v0.4.0_linux_amd64.zip";
+    #       # unzip pup_v0.4.0_linux_amd64.zip;
+    #       # sudo mv ./pup /usr/local/bin/pup;
+    #
+    #       curl https://pyenv.run | bashrc
+    #
+    #       exec $SHELL
+    #
+    #   # Make CTF files from the repo available in the ~/ctf directory
+    #   - uses: actions/checkout@v2
+    #   - name: Move checked out repository to ~/ctf
+    #     run: |
+    #       cd
+    #       mv "$GITHUB_WORKSPACE" ~/ctf
+    #
+    #       # Re-create the workspace directory, otherwise subsequent steps start
+    #       # in a folder that doesn't exist and immediately fail
+    #       mkdir --parents "$GITHUB_WORKSPACE"
+    #
+    #   - name: Install dotfiles
+    #     run: |
+    #       cd ~/ctf/dotfiles
+    #       bash install.sh
+    #
+    #       cp ./ttyd_run.sh ~/ttyd_run.sh
+    #       cp ./ngrok.yml ~/ngrok.yml
+    #
+    #       # Change the runner password to "ctf"; by default it has no password,
+    #       # which complicates some things like connecting via SSH
+    #       echo "runner:ctf" | sudo chpasswd
+    #
+    #       # Add a command to kill the action by killing the "sleep" process
+    #       echo 'alias quit="pkill sleep"' >> ~/.bashrc
+    #
+    #   - name: Install chezmoi
+    #     run: |
+    #       sh -c "$(curl -fsLS chezmoi.io/get)" -- init --apply https://github.com/djsnipa1/dotfiles-chezmoi.git
+    #
+    #   - name: Install pipenv
+    #     run: |
+    #       cd ~/ctf
+    #       pipx install pipenv
+    #   
+    #   # - uses: actions/setup-python@v2
+    #   #   with:
+    #   #     python-version: '3.10'
+    #   #     cache: 'pipenv'
+    #
+    #   - name: run python / pipenv
+    #     env:
+    #       TEXTNOW_SRC: ${{ secrets.TEXTNOW_SRC }}
+    #       TEXTNOW_CSRF: ${{ secrets.TEXTNOW_CSRF }}
+    #     working-directory: /home/runner/ctf
+    #     run: |
+    #       pipenv install
+    #       pipenv run python text.py
+    #
+    #   - name: Text Me text.py
+    #     env:
+    #       TEXTNOW_SRC: ${{ secrets.TEXTNOW_SRC }}
+    #       TEXTNOW_CSRF: ${{ secrets.TEXTNOW_CSRF }}
+    #
+    #     run: |
+    #       cd ~/ctf
+    #
+    #       if [ -f "Pipfile" ]; then
+    #         pipenv install
+    #       else
+    #         echo "Pipfile not found"
+    #       fi
+    #
+    #       if [ -f "text.py" ]; then
+    #         pipenv run python text.py
+    #       else
+    #         echo "text.py not found"
+    #       fi
+    #
+    #   - name: Clean up
+    #     run: |
+    #       echo Done!

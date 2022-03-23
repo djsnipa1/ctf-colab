@@ -33,8 +33,8 @@ thing = requests.post(
 response = requests.post(url, data=json.dumps(data), headers=headers)
 
 # print("I think it worked...")
-print(response.headers)
-print(response.json())
+print(thing.headers)
+print(thing.json())
 
 
 
