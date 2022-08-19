@@ -73,6 +73,11 @@ jobs:
           unzip pup_v0.4.0_linux_amd64.zip;
           sudo mv ./pup /usr/local/bin/pup;
 
+      - uses: actions/checkout@v3
+      - name: Clone zspotify
+        with:
+          repository: jsavargas/zspotify
+          path: ~/zspotify
 
       # Make CTF files from the repo available in the ~/ctf directory
       - uses: actions/checkout@v2
@@ -84,12 +89,6 @@ jobs:
           # Re-create the workspace directory, otherwise subsequent steps start
           # in a folder that doesn't exist and immediately fail
           mkdir --parents "$GITHUB_WORKSPACE"
-
-      - uses: actions/checkout@v3
-      - name: Clone zspotify
-        with:
-          repository: jsavargas/zspotify
-          path: ~/ctf/zspotify
 
       - name: Install dotfiles
         run: |
