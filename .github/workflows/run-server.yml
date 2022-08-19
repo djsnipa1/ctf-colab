@@ -45,6 +45,7 @@ jobs:
             socat
             build-essential
             imagemagick
+            ffmpeg
             jq
             binwalk
             exiftool
