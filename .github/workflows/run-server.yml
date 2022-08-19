@@ -85,6 +85,11 @@ jobs:
           # in a folder that doesn't exist and immediately fail
           mkdir --parents "$GITHUB_WORKSPACE"
 
+      - uses: actions/checkout@v3
+      - name: Clone zspotify
+        with:
+          repository: jsavargas/zspotify
+          path: ~/ctf/zspotify 
 
       - name: Install dotfiles
         run: |
