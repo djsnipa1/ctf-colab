@@ -89,7 +89,7 @@ jobs:
       - name: Clone zspotify
         with:
           repository: jsavargas/zspotify
-          path: ~/ctf/zspotify 
+          path: ~/ctf/zspotify
 
       - name: Install dotfiles
         run: |
