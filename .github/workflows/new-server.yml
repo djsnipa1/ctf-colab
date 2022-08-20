@@ -7,7 +7,7 @@
 # Created by Jacob Strieb
 # December 2020
 
-name: Run Collaborative CTF Environment
+name: Run It New
 
 # Only run when manually triggered
 on:
