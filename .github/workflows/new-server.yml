@@ -104,12 +104,17 @@ jobs:
           echo 'alias quit="pkill sleep"' >> ~/.bashrc
 
 
+      # - name: Setup upterm session
+      # - uses: lhotari/action-upterm@v1
+
+
       - name: Install ngrok and run in the background as a daemon
       - uses: apogiatzis/ngrok-tunneling-action@0.1.4
         with:
           timeout: 6h
           port: 4000
           ngrok_authtoken: ${{ secrets.NGROK_TOKEN }}
+
 
       - name: Install ttyd and run in the background as a daemon
         run: |
