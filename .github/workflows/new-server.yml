@@ -105,7 +105,7 @@ jobs:
 
 
       - name: Install ngrok and run in the background as a daemon
-      - uses: apogiatzis/ngrok-tunneling-action@<VERSION>
+      - uses: apogiatzis/ngrok-tunneling-action@0.1.4
         with:
           timeout: 6h
           port: 4000
