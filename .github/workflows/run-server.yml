@@ -7,7 +7,7 @@
 # Created by Jacob Strieb
 # December 2020
 
-name: Run It New
+name: Run Collaborative CTF Environment
 
 # Only run when manually triggered
 on:
@@ -104,16 +104,42 @@ jobs:
           echo 'alias quit="pkill sleep"' >> ~/.bashrc
 
 
-      # - name: Setup upterm session
-      # - uses: lhotari/action-upterm@v1
-
-
       - name: Install ngrok and run in the background as a daemon
-      - uses: apogiatzis/ngrok-tunneling-action@0.1.4
-        with:
-          timeout: 6h
-          port: 4000
-          ngrok_authtoken: ${{ secrets.NGROK_TOKEN }}
+        run: |
+          # Only proceed if there is a user-supplied authtoken for ngrok.
+          # Prefer one submitted with a workflow dispatch, but accept one
+          # stored as a repository secret.
+          NGROK_AUTHTOKEN="${{ github.event.inputs.ngrok_token }}"
+          if [ -z "$NGROK_AUTHTOKEN" ]; then
+            NGROK_AUTHTOKEN="${{ secrets.NGROK_TOKEN }}"
+          fi
+          if [ -z "$NGROK_AUTHTOKEN" ]; then
+            exit 0
+          fi
+
+          # Add the authtoken to the ngrok configuration file
+          echo "authtoken: $NGROK_AUTHTOKEN" >> ~/ngrok.yml
+
+          # Download and install ngrok
+          cd
+          wget \
+            --quiet \
+            --output-document ngrok.zip \
+            "https://bin.equinox.io/c/4VmDzA7iaHb/ngrok-stable-linux-amd64.zip"
+          unzip ngrok.zip
+          sudo mv ngrok /usr/local/bin/ngrok
+          touch ~/ngrok.log
+
+          # Run ngrok in the background as a daemon
+          start-stop-daemon \
+            --start \
+            --background \
+            --chdir ~/ctf \
+            --exec /usr/local/bin/ngrok \
+            -- \
+              start \
+              -config ~/ngrok.yml \
+              ttyd ssh
 
 
       - name: Install ttyd and run in the background as a daemon
@@ -165,12 +191,6 @@ jobs:
             --hiddenserviceport "22 127.0.0.1:22"
 
 
-      - name: Clone zspotify
-        run: |
-          cd ~
-          git clone https://github.com/jsavargas/zspotify
-
-
       - name: Display connection information
         run: |
           # Start a tmux session in the background whose window group everyone
@@ -192,19 +212,19 @@ jobs:
             "$(cat ~/tor_service/hostname)"
 
           # Print ngrok connection info (if applicable)
-          # NGROK_AUTHTOKEN="${{ github.event.inputs.ngrok_token }}"
-          # if [ -z "$NGROK_AUTHTOKEN" ]; then
-          #   NGROK_AUTHTOKEN="${{ secrets.NGROK_TOKEN }}"
-          # fi
-          # if [ -n "$NGROK_AUTHTOKEN" ]; then
-          #   echo "To connect using ngrok (i.e., not Tor):"
-          #   cat ~/ngrok.log \
-          #     | jq .url \
-          #     | grep -v "null" \
-          #     | tr -d '"' \
-          #     | sed 's/tcp:\/\/\(.*\)/ssh ssh:\/\/runner@\1/g' \
-          #     | sort
-          # fi
+          NGROK_AUTHTOKEN="${{ github.event.inputs.ngrok_token }}"
+          if [ -z "$NGROK_AUTHTOKEN" ]; then
+            NGROK_AUTHTOKEN="${{ secrets.NGROK_TOKEN }}"
+          fi
+          if [ -n "$NGROK_AUTHTOKEN" ]; then
+            echo "To connect using ngrok (i.e., not Tor):"
+            cat ~/ngrok.log \
+              | jq .url \
+              | grep -v "null" \
+              | tr -d '"' \
+              | sed 's/tcp:\/\/\(.*\)/ssh ssh:\/\/runner@\1/g' \
+              | sort
+          fi
 
       - name: Wait...
         run: |
