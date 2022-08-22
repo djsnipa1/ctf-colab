@@ -1,3 +1,15 @@
+# copy and paste
+
+```shell
+git clone https://github.com/jsavargas/zspotify
+```
+
+```shell
+  docker run --rm -it -v $(pwd)/docker/config:/root/.config/ZSpotify -v $(pwd)/docker/download:/root/Music jsavargas/zspotify
+  
+  docker-compose run --rm zspotify
+```
+
 # Introduction
 
 Create an ephemeral, collaborative programming environment inside GitHub
